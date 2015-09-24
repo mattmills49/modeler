@@ -41,7 +41,7 @@ WOE <- function(x, y, bins = 10, adj = .5, incl_NA = T){
     } else {
       cuts <- factor(x, levels = unique(as.character(x)))
       x_bins <- rep("NA", length(x))
-      x_bins[!na_log] <- as.character(x)
+      x_bins[!na_log] <- as.character(x[!na_log])
     }
   }
   bins <- length(unique(x_bins))
