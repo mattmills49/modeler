@@ -48,11 +48,11 @@ WOE <- function(x, y, bins = 10, adj = .5, incl_NA = T){
   levels <- sort(unique(y))
   x_tab <- prop.table(table(x_bins, y == levels[2]) + adj, 2)
   x_woe <- log(x_tab[, 2] / x_tab[, 1])
-  iv <- sum((x_tab[, 2] - x_tab[, 1]) * x_woe)
+  iv <- sum((x_tab[, 2] - x_tab[, 1]) * x_woe)*100
   if(incl_NA){
     if(sum(na_log) > 0) plotdata <- data.frame(X = factor(c(levels(cuts), "NA"), levels = c(levels(cuts), "NA")), Y = x_woe[c(levels(cuts), "NA")], stringsAsFactors = F)
     else plotdata <- data.frame(X = factor(c(levels(cuts)), levels = c(levels(cuts))), Y = x_woe[c(levels(cuts))], stringsAsFactors = F)
   } else plotdata <- data.frame(X = factor(c(levels(cuts)), levels = c(levels(cuts))), Y = x_woe[c(levels(cuts))], stringsAsFactors = F)
-  woeplot <- ggplot2::qplot(x = X, y = Y, data = plotdata, xlab = paste("IV =", round(iv, 4)), ylab = "WOE", geom = "bar", stat = "identity", main = "Larger Values have more Y = 1") + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+  woeplot <- ggplot2::qplot(x = X, y = Y, data = plotdata, xlab = paste("IV =", round(iv, 2)), ylab = "WOE", geom = "bar", stat = "identity", main = "Larger Values have more Y = 1") + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
   return(list(InformationValue = iv, Bins = rownames(x_tab), Plot = woeplot))
 }

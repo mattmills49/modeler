@@ -1,6 +1,8 @@
 #' Find KS Statistic of an Independent - Dependent Variable Combo
 #' 
-#' This function calculates the KS value associated with a linear model made from a single predictor on a binary dependent variable
+#' This function calculates the KS value associated with a linear model made
+#' from a single predictor on a binary dependent variable. It also removes any
+#' missing values from the dependent variable before calculating KS. 
 #' @param y Must be Categorical or only have two values. Also can't contain any \code{NA} values
 #' @keywords ks
 #' @return The KS value for the independent variable
