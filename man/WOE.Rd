@@ -27,7 +27,9 @@ A list containing:
 \code{Plot} ggplot object with the WOE of each bin.
 }
 \description{
-This function finds the WOE and IV of a variable in regards to its relationship with the dependent variable
+This function finds the WOE and IV of a variable in regards to its
+relationship with the dependent variable. If x is a factor it will be
+converted to a character vector.
 }
 \examples{
 result <- WOE(x = 1:100, y = sample(c(0, 1), 100, replace = T))

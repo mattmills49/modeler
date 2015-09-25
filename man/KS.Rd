@@ -13,7 +13,9 @@ KS(x, y)
 The KS value for the independent variable
 }
 \description{
-This function calculates the KS value associated with a linear model made from a single predictor on a binary dependent variable
+This function calculates the KS value associated with a linear model made
+from a single predictor on a binary dependent variable. It also removes any
+missing values from the dependent variable before calculating KS.
 }
 \examples{
 KS(x = 1:100, y = sample(c(0, 1), 100, replace = T))
