@@ -3,7 +3,7 @@
 #' This function produces a histogram of the independent variable, 
 #' summary statics, missing data information, and estimates of the trend
 #' between it and the dependent variable. 
-#' @param x independent variable, must be a vector
+#' @param x independent variable, must be a vector. If x is a factor it will be converted to a character vector
 #' @param y dependent variable, must be a vector and can't contain missing values
 #' @param var_name The name of the dependent variable
 #' @param plot_save logical indicating if plot should be saved, default is FALSE
@@ -16,6 +16,7 @@
 #' 
 
 VariableExplore <- function(x, y, var_name, plot_save = F, fname = "none"){
+  if(is.factor(x)) x <- as.character(x)
   if(!is.vector(x)) stop("x must be a vector")
   if(!is.vector(y)) stop("y must be a vector")
   if(length(x) != length(y)) stop("x and y are not the same length")
