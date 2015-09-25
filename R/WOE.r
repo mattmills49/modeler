@@ -1,6 +1,8 @@
 #' Find Weight Of Evidence
 #' 
-#' This function finds the WOE and IV of a variable in regards to its relationship with the dependent variable
+#' This function finds the WOE and IV of a variable in regards to its 
+#' relationship with the dependent variable. If x is a factor it will be 
+#' converted to a character vector. 
 #' @param x Independent variable
 #' @param y Must be Categorical or only have two values. Also can't contain any \code{NA} values
 #' @param bins The number of buckets to bin the independent variable (\code{x})
@@ -16,6 +18,7 @@
 #' result <- WOE(x = 1:100, y = sample(c(0, 1), 100, replace = T))
 
 WOE <- function(x, y, bins = 10, adj = .5, incl_NA = T){
+  if(is.factor(x)) x <- as.character(x)
   if(length(unique(y)) != 2) stop("Y variable is not binary")
   if(typeof(x) == "list" | typeof(y) == "list") stop("x and y must be vectors not lists")
   if(length(x) != length(y)) stop("x and y are not the same length")
