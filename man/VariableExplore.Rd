@@ -7,7 +7,7 @@
 VariableExplore(x, y, var_name, plot_save = F, fname = "none")
 }
 \arguments{
-\item{x}{independent variable, must be a vector}
+\item{x}{independent variable, must be a vector. If x is a factor it will be converted to a character vector}
 
 \item{y}{dependent variable, must be a vector and can't contain missing values}
 
