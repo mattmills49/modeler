@@ -23,6 +23,7 @@ WOE <- function(x, y, bins = 10, adj = .5, incl_NA = T){
   if(typeof(x) == "list" | typeof(y) == "list") stop("x and y must be vectors not lists")
   if(length(x) != length(y)) stop("x and y are not the same length")
   if(any(is.na(y))) stop("y must not contain any missing values")
+  if(n_distinct(x) <= 5) x <- as.character(x)
   na_log <- is.na(x)
   if(class(x) == "numeric" | class(x) == "integer"){
     if(!incl_NA){
