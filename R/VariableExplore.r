@@ -24,10 +24,12 @@ VariableExplore <- function(x, y, var_name, plot_save = F, fname = "none"){
   if(length(unique(y)) == 1) stop("y only contains one unique value")
   missing_log <- is.na(x)
   num_nas <- sum(missing_log)
-  hist_plot <- ggplot2::qplot(x = x[!missing_log], xlab = "Dependent Variable", main = "Distribution of Dependent Variable")
   if(class(x) %in% c("numeric", "integer")){
+    r <- max(x, na.rm = T) - min(x, na.rm = T)
+    hist_plot <- ggplot2::qplot(x = x[!missing_log], xlab = "Dependent Variable", main = "Distribution of Dependent Variable", binwidth = r/10)
     summary_vals <- dplyr::data_frame(Measure = c("Min", "Q1", "Median", "Q3", "Max", "SD", "% NA's"), Value = c(min(x, na.rm = T), quantile(x, probs = c(.25, .5, .75), na.rm = T), max(x, na.rm = T), sd(x, na.rm = T), mean(missing_log)))
   } else {
+    hist_plot <- ggplot2::qplot(x = x[!missing_log], xlab = "Dependent Variable", main = "Distribution of Dependent Variable")
     summary_vals <- dplyr::data_frame(Value = rownames(table(x, useNA = "ifany")), Pct = round(as.vector(table(x, useNA = "ifany"))/length(x)*100, 2)) %>% dplyr::arrange(desc(Pct)) %>% head(7)
   }
   binary <- F
