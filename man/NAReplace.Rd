@@ -11,7 +11,7 @@ NAReplace(x, y, replace = "linear")
 
 \item{y}{dependent variable, must be a vector and can't contain missing values}
 
-\item{replace}{The type of \code{NA} replacement method. Options include \code{mean}, \code{median}, \code{linear}, and \code{smooth}.}
+\item{replace}{The type of \code{NA} replacement method. Options include \code{mean}, \code{median}, \code{linear}, \code{sample}, and \code{smooth}.}
 }
 \value{
 A list containing

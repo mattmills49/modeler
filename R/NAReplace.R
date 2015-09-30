@@ -3,7 +3,7 @@
 #' This function takes in an x and y vector and attempts to replace missing values. Replacement can be done with the mean or median value of the non-missing values or using a regression replace technique. The regression technique first finds the predicted response value of y for the non missing elements of x. The average value of y for the missing values is then used to find the x-value that most closely aligns with this average value of y for the missing values.
 #' @param x independent variable, must be a vector. If x is a factor it will be converted to a character vector
 #' @param y dependent variable, must be a vector and can't contain missing values
-#' @param replace The type of \code{NA} replacement method. Options include \code{mean}, \code{median}, \code{linear}, and \code{smooth}. 
+#' @param replace The type of \code{NA} replacement method. Options include \code{mean}, \code{median}, \code{linear}, \code{sample}, and \code{smooth}. 
 #' @keywords eda
 #' @return A list containing
 #' \code{x_orig} The original x vector
@@ -46,6 +46,9 @@ NAReplace <- function(x, y, replace = "linear"){
     if(replace == "median"){
       na_val <- median(x, na.rm = T)
     }
+    if(replace == "sample"){
+      na_val <- sample(x[!na_log], size = sum(na_log), replace = T)
+    }
     if(replace == "linear"){
       if(length(unique(y)) == 2){
         na_model <- glm(y[!na_log] ~ x[!na_log], family = "binomial")
@@ -74,6 +77,9 @@ NAReplace <- function(x, y, replace = "linear"){
     }
     if(replace == "median"){
       na_val <- attr(sort(table(x), decreasing = T)[1], "names")
+    }
+    if(replace == "sample"){
+      na_val <- sample(x[!na_log], size = sum(na_log), replace = T)
     }
     if(replace == "linear"){
       if(length(unique(y)) == 2){
