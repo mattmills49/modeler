@@ -3,6 +3,7 @@
 #' This function completes regression-based missing imputation. The function accepts a data frame containing variables with missing values. The data frame can contain variables with no missing values if you would not like to include them in replacing the values with missing variables. 
 #' @param missing_df A data frame containing at least some columns with missing values
 #' @param num_iter Number of iterations to perform
+#' @param progress A logical indicator to print the number of completed interactions
 #' @keywords eda
 #' @return A list containing
 #' \code{complete_obs} a data frame with the missing values replaced through regression imputation
@@ -22,7 +23,7 @@
 
 
 
-MissingImputation <- function(missing_df, num_iter = 10){
+MissingImputation <- function(missing_df, num_iter = 10, progress = F){
   if(!("data.frame" %in% class(missing_df))) stop("missing_df must be a data frame")
   if(num_iter < 1) stop("number of iterations must be strictly positive")
   missing_log <- unlist(lapply(missing_df, function(x) any(is.na(x))))
@@ -42,6 +43,7 @@ MissingImputation <- function(missing_df, num_iter = 10){
   cols <- ncol(missing_df)
   change <- matrix(0, nrow = num_iter, ncol = cols)
   for(i in seq_len(num_iter)){
+    if(progress) print(i)
     for(j in seq_len(cols)){
       na_log <- is.na(missing_df[[j]])
       n_unique <- length(unique(missing_df[[j]][!na_log]))
