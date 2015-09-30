@@ -27,6 +27,9 @@ na2 <- runif(nrow(iris_df)) < .33
 iris_df[["Species"]][na1] <- NA
 iris_df[["Sepal.Length"]][na2] <- NA
 iris_complete <- MissingImputation(iris_df, num_iter = 5)
+difs <- data.frame(Species.Orig = as.character(iris[["Species"]][na1]), Species.Replace = iris_complete$complete_obs[["Species"]][na1], Sepal.Orig = iris[["Sepal.Length"]][na1], Sepal.Replace = iris_complete$complete_obs[["Sepal.Length"]][na1], stringsAsFactors = F)
+\dontrun{View(difs[[1]], difs[[2]])}
+\dontrun{ggplot2::qplot(x = Sepal.Orig, y = Sepal.Replace, data = difs)}
 }
 \keyword{eda}
 
