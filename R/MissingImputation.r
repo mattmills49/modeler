@@ -1,6 +1,6 @@
 #' Missing Imputation
 #' 
-#' This function completes regression-based missing imputation. The function accepts a data frame containing variables with missing values. The data frame can contain variables with no missing values if you would not like to include them in replacing the values with missing variables. 
+#' This function completes regression-based missing imputation. The function accepts a data frame containing variables with missing values. The data frame can contain variables with no missing values if you would not like to include them in replacing the values with missing variables. However the data frame must have at least one column with at least one missing value. The function will look for strictly positive values and percentage values so those same patterns hold with replaced values. If you want to override this you need to include at least one observation where that logic is broken. 
 #' @param missing_df A data frame containing at least some columns with missing values
 #' @param num_iter Number of iterations to perform
 #' @param progress A logical indicator to print the number of completed interactions
@@ -34,6 +34,8 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F){
   missing_df <- missing_df[, missing_log]
   factrs <- unlist(lapply(missing_df, is.factor))
   if(any(factrs)) missing_df[, factrs] <- lapply(missing_df[, factrs, drop = F], as.character)
+  positive_values <- unlist(lapply(missing_df, function(x) ifelse(class(x) == "numeric" | class(x) == "integer", all(x[!is.na(x)] >= 0), F)))
+  pct_values <- unlist(lapply(missing_df, function(x) ifelse(class(x) == "numeric" | class(x) == "integer", all(x[!is.na(x)] <= 1 & x[!is.na(x)] >= 0), F)))
   replace_df <- as.data.frame(lapply(missing_df, function(x){
     na_log <- is.na(x)
     x_na <- sample(x[!na_log], size = sum(na_log), replace = T)
@@ -76,6 +78,8 @@ reg_data[[names(missing_df)[j]]] <- factor(reg_data[[names(missing_df)[j]]])
         } else {
           missing_lm <- lm(formula = paste(names(missing_df)[j], "~ ."), data = reg_data)
           preds <- rnorm(length(na_log), mean = predict(missing_lm), sd = summary(missing_lm)$sigma)
+          if(positive_values[j]) preds <- ifelse(preds < 0, 0, preds)
+          if(pct_values[j]) preds <- ifelse(preds > 1, 1, preds)
           change[i, j] <- mean(abs(replace_df[[j]][na_log] - preds[na_log]))
           replace_df[[j]][na_log] <- preds[na_log]
         }

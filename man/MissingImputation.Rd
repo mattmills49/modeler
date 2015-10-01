@@ -4,12 +4,14 @@
 \alias{MissingImputation}
 \title{Missing Imputation}
 \usage{
-MissingImputation(missing_df, num_iter = 10)
+MissingImputation(missing_df, num_iter = 10, progress = F)
 }
 \arguments{
 \item{missing_df}{A data frame containing at least some columns with missing values}
 
 \item{num_iter}{Number of iterations to perform}
+
+\item{progress}{A logical indicator to print the number of completed interactions}
 }
 \value{
 A list containing
@@ -17,7 +19,7 @@ A list containing
 \code{change} The differences between each iteration for each variable
 }
 \description{
-This function completes regression-based missing imputation. The function accepts a data frame containing variables with missing values. The data frame can contain variables with no missing values if you would not like to include them in replacing the values with missing variables.
+This function completes regression-based missing imputation. The function accepts a data frame containing variables with missing values. The data frame can contain variables with no missing values if you would not like to include them in replacing the values with missing variables. However the data frame must have at least one column with at least one missing value. The function will look for strictly positive values and percentage values so those same patterns hold with replaced values. If you want to override this you need to include at least one observation where that logic is broken.
 }
 \examples{
 iris_df <- iris
