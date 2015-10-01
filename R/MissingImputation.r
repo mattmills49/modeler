@@ -6,7 +6,9 @@
 #' @param progress A logical indicator to print the number of completed interactions
 #' @keywords eda
 #' @return A list containing
+#' 
 #' \code{complete_obs} a data frame with the missing values replaced through regression imputation
+#' 
 #' \code{change} The differences between each iteration for each variable
 #' @export
 #' @examples 
@@ -44,6 +46,8 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F){
   }), stringsAsFactors = F)
   cols <- ncol(missing_df)
   change <- matrix(0, nrow = num_iter, ncol = cols)
+  colname(change) <- names(missing_df)
+  rownames(change) <- 1:num_iter
   for(i in seq_len(num_iter)){
     if(progress) print(i)
     for(j in seq_len(cols)){
@@ -51,14 +55,15 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F){
       n_unique <- length(unique(missing_df[[j]][!na_log]))
       if(is.null(complete_df)) reg_data <- replace_df
       if(!is.null(complete_df)) reg_data <- cbind(replace_df, complete_df)
+      chars <- unlist(lapply(reg_data, class)) == "character"
       if(class(missing_df[[j]]) == "character"){
-reg_data[[names(missing_df)[j]]] <- factor(reg_data[[names(missing_df)[j]]])
+        reg_data[[names(missing_df)[j]]] <- factor(reg_data[[names(missing_df)[j]]])
         level <- levels(reg_data[[names(missing_df)[j]]])
         if(n_unique == 1){
           replace_df[[j]][na_log] <- unique(missing_df[[j]][!na_log])
         } else if(n_unique == 2){
           missing_glm <- glm(formula = paste(names(missing_df)[j], "~ ."), data = reg_data, family = "binomial")
-          preds <- ifelse(predict(missing_glm, type = "response") < .5, level[1], level[2])
+          preds <- vapply(predict(missing_glm, type = "response"), function(x) sample(level, size = 1, prob = c(1 - x, x)), character(1))
           change[i, j] <- sum(replace_df[[j]][na_log] != preds[na_log])
           replace_df[[j]][na_log] <- preds[na_log]
         } else {
@@ -68,7 +73,7 @@ reg_data[[names(missing_df)[j]]] <- factor(reg_data[[names(missing_df)[j]]])
             factor_glm <- glm(paste0("Y ~ .-", names(missing_df)[j]), data = reg_data, family = "binomial")
             pred_matr[, l] <- predict(factor_glm, type = "response")
           }
-          preds <- apply(pred_matr, 1, function(x) level[which.max(x)[1]])
+          preds <- apply(pred_matr, 1, function(x) sample(level, size = 1, prob = x/sum(x)))
           change[i, j] <- sum(replace_df[[j]][na_log] != preds[na_log])
           replace_df[[j]][na_log] <- preds[na_log]
         }
@@ -92,5 +97,5 @@ reg_data[[names(missing_df)[j]]] <- factor(reg_data[[names(missing_df)[j]]])
 # load("~/Documents/Data/Magic/sth_attn_1415.rdata")
 # complete_df <- sth_attn_1415[, !unlist(lapply(sth_attn_1415, function(x) any(is.na(x))))]
 # missing_df <- sth_attn_1415[, unlist(lapply(sth_attn_1415, function(x) any(is.na(x))))]
-# complete_df <- complete_df[, c("acct_id", "Section", "row_name", "seat_number", "Seats", "full_price", "ticket_type", "ticket_status", "sold_status", "plan_event_name", "Price_Name")]
-# missing_df <- missing_df[, 1:10]
+# complete_df <- complete_df[, c("Section", "row_name", "seat_number", "Seats", "full_price", "ticket_type", "ticket_status", "sold_status", "plan_event_name", "Price_Name")]
+# missing_df <- missing_df[, -c(1, 5, 6, 8:11, 13, 15:19, 30)]
