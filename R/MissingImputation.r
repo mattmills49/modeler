@@ -10,7 +10,7 @@
 #' 
 #' \code{complete_obs} a data frame with the missing values replaced through regression imputation
 #' 
-#' \code{change} The differences between each iteration for each variable
+#' \code{change}       The differences between each iteration for each variable
 #' @export
 #' @examples 
 #' iris_df <- iris
@@ -62,13 +62,21 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F, sample_fr
         } else if(n_unique == 2){
           if(sample_frac == 1){
             missing_glm <- glm(formula = paste(names(missing_df)[j], "~ ."), data = reg_data, family = "binomial")
-            preds <- vapply(predict(missing_glm, type = "response"), function(x) sample(level, size = 1, prob = c(1 - x, x)), character(1))
+            preds <- vapply(predict(missing_glm, type = "response"), function(x){
+              if(is.na(x)){
+                print(c(i, j))
+                return(sample(level, size = 1))
+              } else sample(level, size = 1, prob = c(1 - x, x))}, character(1))
           } else {
             samp <- runif(nrow(reg_data)) <= sample_frac
             reg_matr <- data.frame(model.matrix(formula(paste0(names(missing_df)[j], " ~ .-1")), data = reg_data), stringsAsFactors = F)
             reg_matr$Y <- reg_data[[names(missing_df)[j]]]
             missing_glm <- glm(Y ~ ., data = reg_matr[samp, ], family = "binomial")
-            preds <- suppressWarnings(vapply(predict(missing_glm, newdata = reg_matr, type = "response"), function(x) sample(level, size = 1, prob = c(1 - x, x)), character(1)))
+            preds <- suppressWarnings(vapply(predict(missing_glm, newdata = reg_matr, type = "response"), function(x){
+              if(is.na(x)){
+                print(names(replace_df)[j])
+                return(sample(level, size = 1))
+              } else sample(level, size = 1, prob = c(1 - x, x))}, character(1)))
           }
           change[i, j] <- sum(replace_df[[j]][na_log] != preds[na_log])
           replace_df[[j]][na_log] <- preds[na_log]
@@ -90,7 +98,11 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F, sample_fr
             }
           }
           probs <- cbind(exp(pred_matr), 1) / (1 + rowSums(exp(pred_matr)))
-          preds <- apply(probs, 1, function(x) sample(level, size = 1, prob = x/sum(x)))
+          preds <- apply(probs, 1, function(x){
+            if(any(is.na(x))){
+              print(names(replace_df)[j])
+              return(sample(level, size = 1))
+            } else sample(level, size = 1, prob = x)})
           change[i, j] <- sum(replace_df[[j]][na_log] != preds[na_log])
           replace_df[[j]][na_log] <- preds[na_log]
         }
@@ -120,7 +132,5 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F, sample_fr
   if(!is.null(complete_df)) return(list(complete_obs = cbind(replace_df, complete_df)[, colorder], change_amounts = change))
 }
 # load("~/Documents/Data/Magic/sth_attn_1415.rdata")
-# complete_df <- sth_attn_1415[, !unlist(lapply(sth_attn_1415, function(x) any(is.na(x))))]
-# missing_df <- sth_attn_1415[, unlist(lapply(sth_attn_1415, function(x) any(is.na(x))))]
-# complete_df <- complete_df[, c("Section", "row_name", "seat_number", "Seats", "full_price", "ticket_type", "ticket_status", "sold_status", "plan_event_name", "Price_Name")]
-# missing_df <- missing_df[, -c(1, 5, 6, 8:11, 13, 15:19, 22:24, 30)]
+# gbm_data <- select(sth_attn_1415, Attended, event_day, block_num_seats, full_price, Section, Price_Name, WinPct, avg_attn_ly, avg_attn_ty, attn_avg, OppWinPct, DivOpp, ConfOpp, ticket_type_category, ticket_category, price_code_name, tenure, account_gender, account_age, income_est, household_size, job, education_level, marriage, distance_to_stadium) %>% mutate(education_level = as.character(education_level))
+# missing_data <- select(gbm_data, -Attended, -event_day, -WinPct, -avg_attn_ly, -avg_attn_ty, -OppWinPct, -DivOpp, -ConfOpp)
