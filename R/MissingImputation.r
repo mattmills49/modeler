@@ -25,7 +25,7 @@
 
 
 
-MissingImputation <- function(missing_df, num_iter = 10, progress = F){
+MissingImputation <- function(missing_df, num_iter = 10, progress = F, sample_fraction = 1){
   if(!("data.frame" %in% class(missing_df))) stop("missing_df must be a data frame")
   if(num_iter < 1) stop("number of iterations must be strictly positive")
   missing_log <- unlist(lapply(missing_df, function(x) any(is.na(x))))
@@ -55,23 +55,40 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F){
       n_unique <- length(unique(missing_df[[j]][!na_log]))
       if(is.null(complete_df)) reg_data <- replace_df
       if(!is.null(complete_df)) reg_data <- cbind(replace_df, complete_df)
-      chars <- unlist(lapply(reg_data, class)) == "character"
       if(class(missing_df[[j]]) == "character"){
         reg_data[[names(missing_df)[j]]] <- factor(reg_data[[names(missing_df)[j]]])
         level <- levels(reg_data[[names(missing_df)[j]]])
         if(n_unique == 1){
           replace_df[[j]][na_log] <- unique(missing_df[[j]][!na_log])
         } else if(n_unique == 2){
-          missing_glm <- glm(formula = paste(names(missing_df)[j], "~ ."), data = reg_data, family = "binomial")
-          preds <- vapply(predict(missing_glm, type = "response"), function(x) sample(level, size = 1, prob = c(1 - x, x)), character(1))
+          if(sample_frac == 1){
+            missing_glm <- glm(formula = paste(names(missing_df)[j], "~ ."), data = reg_data, family = "binomial")
+            preds <- vapply(predict(missing_glm, type = "response"), function(x) sample(level, size = 1, prob = c(1 - x, x)), character(1))
+          } else {
+            samp <- runif(nrow(reg_data)) <= sample_frac
+            reg_matr <- data.frame(model.matrix(formula(paste0(names(missing_df)[j], " ~ .-1")), data = reg_data), stringsAsFactors = F)
+            reg_matr$Y <- reg_data[[names(missing_df)[j]]]
+            missing_glm <- glm(Y ~ ., data = reg_matr[samp, ], family = "binomial")
+            preds <- suppressWarnings(vapply(predict(missing_glm, newdata = reg_matr, type = "response"), function(x) sample(level, size = 1, prob = c(1 - x, x)), character(1)))
+          }
           change[i, j] <- sum(replace_df[[j]][na_log] != preds[na_log])
           replace_df[[j]][na_log] <- preds[na_log]
         } else {
           pred_matr <- matrix(0, nrow = nrow(reg_data), ncol = length(level) - 1)
+          if(sample_frac < 1){
+            reg_matr <- data.frame(model.matrix(formula(paste0(names(missing_df)[j], " ~ .-1")), data = reg_data), stringsAsFactors = F)
+            samp <- runif(nrow(reg_data)) <= sample_frac
+          }
           for(l in seq_len(length(level) - 1)){
-            reg_data$Y <- (reg_data[[names(missing_df)[j]]] == level[l])*1
-            factor_glm <- glm(paste0("Y ~ .-", names(missing_df)[j]), data = reg_data, family = "binomial")
-            pred_matr[, l] <- predict(factor_glm)
+            if(sample_frac == 1){
+              reg_data$Y <- (reg_data[[names(missing_df)[j]]] == level[l])*1
+              factor_glm <- glm(paste0("Y ~ .-", names(missing_df)[j]), data = reg_data, family = "binomial")
+              pred_matr[, l] <- predict(factor_glm)
+            } else {
+              reg_matr$Y <- (reg_data[[names(missing_df)[j]]] == level[l])*1
+              factor_glm <- glm(Y ~ ., data = reg_matr[samp, ], family = "binomial")
+              pred_matr[, l] <- suppressWarnings(predict(factor_glm, newdata = reg_matr))
+            }
           }
           probs <- cbind(exp(pred_matr), 1) / (1 + rowSums(exp(pred_matr)))
           preds <- apply(probs, 1, function(x) sample(level, size = 1, prob = x/sum(x)))
@@ -82,8 +99,16 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F){
         if(n_unique == 1){
           replace_df[[j]][na_log] <- unique(missing_df[[j]][!na_log])
         } else {
-          missing_lm <- lm(formula = paste(names(missing_df)[j], "~ ."), data = reg_data)
-          preds <- rnorm(length(na_log), mean = predict(missing_lm), sd = summary(missing_lm)$sigma)
+          if(sample_frac == 1){
+            missing_lm <- lm(formula = paste(names(missing_df)[j], "~ ."), data = reg_data)
+            preds <- rnorm(length(na_log), mean = predict(missing_lm), sd = summary(missing_lm)$sigma)
+          } else {
+            samp <- runif(nrow(reg_data)) <= sample_frac
+            reg_matr <- data.frame(model.matrix(formula(paste0(names(missing_df)[j], " ~ .-1")), data = reg_data), stringsAsFactors = F)
+            reg_matr$Y <- reg_data[[names(missing_df)[j]]]
+            missing_lm <- lm(Y ~ ., data = reg_matr[samp, ])
+            preds <- suppressWarnings(rnorm(length(na_log), mean = predict(missing_lm), sd = summary(missing_lm)$sigma))
+          }
           if(positive_values[j]) preds <- ifelse(preds < 0, 0, preds)
           if(pct_values[j]) preds <- ifelse(preds > 1, 1, preds)
           change[i, j] <- mean(abs(replace_df[[j]][na_log] - preds[na_log]))
@@ -99,4 +124,4 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F){
 # complete_df <- sth_attn_1415[, !unlist(lapply(sth_attn_1415, function(x) any(is.na(x))))]
 # missing_df <- sth_attn_1415[, unlist(lapply(sth_attn_1415, function(x) any(is.na(x))))]
 # complete_df <- complete_df[, c("Section", "row_name", "seat_number", "Seats", "full_price", "ticket_type", "ticket_status", "sold_status", "plan_event_name", "Price_Name")]
-# missing_df <- missing_df[, -c(1, 5, 6, 8:11, 13, 15:19, 30)]
+# missing_df <- missing_df[, -c(1, 5, 6, 8:11, 13, 15:19, 22:24, 30)]
