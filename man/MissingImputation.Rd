@@ -4,7 +4,8 @@
 \alias{MissingImputation}
 \title{Missing Imputation}
 \usage{
-MissingImputation(missing_df, num_iter = 10, progress = F)
+MissingImputation(missing_df, num_iter = 10, progress = F,
+  sample_frac = 1)
 }
 \arguments{
 \item{missing_df}{A data frame containing at least some columns with missing values}
@@ -12,14 +13,18 @@ MissingImputation(missing_df, num_iter = 10, progress = F)
 \item{num_iter}{Number of iterations to perform}
 
 \item{progress}{A logical indicator to print the number of completed interactions}
+
+\item{sample_frac}{A number between 0 and 1 indicating the fraction of observations to use to build the predictive models. Default is 1 which will use all observations.}
 }
 \value{
 A list containing
+
 \code{complete_obs} a data frame with the missing values replaced through regression imputation
+
 \code{change} The differences between each iteration for each variable
 }
 \description{
-This function completes regression-based missing imputation. The function accepts a data frame containing variables with missing values. The data frame can contain variables with no missing values if you would not like to include them in replacing the values with missing variables. However the data frame must have at least one column with at least one missing value. The function will look for strictly positive values and percentage values so those same patterns hold with replaced values. If you want to override this you need to include at least one observation where that logic is broken.
+This function completes regression-based missing imputation. The function accepts a data frame containing variables with missing values. The data frame can contain variables with no missing values if you would not like to include them in replacing the values with missing variables. However the data frame must have at least one column with at least one missing value. The function will look for strictly positive values and percentage values so those same patterns hold with replaced values. If you want to override this you need to include at least one observation where that logic is broken. In addition the function can also use a percentage of values to build the predictive models using \code{sample_frac} option. This is to speed up the missing imputations however not all fractions are faster than just using all observations. I would recomend using a value less than .5.
 }
 \examples{
 iris_df <- iris
