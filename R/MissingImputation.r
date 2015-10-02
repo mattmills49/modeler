@@ -46,7 +46,7 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F){
   }), stringsAsFactors = F)
   cols <- ncol(missing_df)
   change <- matrix(0, nrow = num_iter, ncol = cols)
-  colname(change) <- names(missing_df)
+  colnames(change) <- names(missing_df)
   rownames(change) <- 1:num_iter
   for(i in seq_len(num_iter)){
     if(progress) print(i)
@@ -67,13 +67,14 @@ MissingImputation <- function(missing_df, num_iter = 10, progress = F){
           change[i, j] <- sum(replace_df[[j]][na_log] != preds[na_log])
           replace_df[[j]][na_log] <- preds[na_log]
         } else {
-          pred_matr <- matrix(0, nrow = length(na_log), ncol = length(level))
-          for(l in seq_len(length(level))){
+          pred_matr <- matrix(0, nrow = nrow(reg_data), ncol = length(level) - 1)
+          for(l in seq_len(length(level) - 1)){
             reg_data$Y <- (reg_data[[names(missing_df)[j]]] == level[l])*1
             factor_glm <- glm(paste0("Y ~ .-", names(missing_df)[j]), data = reg_data, family = "binomial")
-            pred_matr[, l] <- predict(factor_glm, type = "response")
+            pred_matr[, l] <- predict(factor_glm)
           }
-          preds <- apply(pred_matr, 1, function(x) sample(level, size = 1, prob = x/sum(x)))
+          probs <- cbind(exp(pred_matr), 1) / (1 + rowSums(exp(pred_matr)))
+          preds <- apply(probs, 1, function(x) sample(level, size = 1, prob = x/sum(x)))
           change[i, j] <- sum(replace_df[[j]][na_log] != preds[na_log])
           replace_df[[j]][na_log] <- preds[na_log]
         }
