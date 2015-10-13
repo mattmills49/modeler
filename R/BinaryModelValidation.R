@@ -21,7 +21,7 @@ BinaryModelValidation <- function(preds, Y, print_summary = T){
   
   vals$Groups <- cut(x = vals$Predictions, breaks = seq(0, 1, .05), include.lowest = T)
   cal_data <- vals %>% dplyr::group_by(Groups) %>% dplyr::summarize(Mean_Prediction = mean(Predictions), Mean_Actual = mean(Actual))
-  cal_plot <- ggplot2::ggplot(ggplot2::aes(x = Mean_Prediction, y = Mean_Actual), data = cal_data) + ggplot2::geom_line(size = 2, color = "blue") + ggplot2::geom_abline(a = 1, b = 0, linetype = "dashed") + ggplot2::ggtitle("Calibration Plot") + ggplot2::xlab("Predicted Probability") + ggplot2::ylab("Actual Probability") + ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%")) + ggplot2::scale_x_continuous(labels = function(x) paste0(x*100, "%"))
+  cal_plot <- ggplot2::ggplot(ggplot2::aes(x = Mean_Prediction, y = Mean_Actual), data = cal_data) + ggplot2::geom_line(size = 2, color = "blue") + ggplot2::geom_abline(a = 1, b = 0, linetype = "dashed") + ggplot2::ggtitle("Calibration Plot") + ggplot2::xlab("Predicted Probability") + ggplot2::ylab("Actual Probability") + ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%"), limits = c(0, 1)) + ggplot2::scale_x_continuous(labels = function(x) paste0(x*100, "%"))
   
   roc_info <- pROC::roc(response = Y, predictor = preds)
   roc_data <- dplyr::data_frame(Sensitivity = roc_info$sensitivities, Specificity = roc_info$specificities)
@@ -45,6 +45,6 @@ BinaryModelValidation <- function(preds, Y, print_summary = T){
   
   scores <- dplyr::data_frame(Metric = c("AUC", "RMSE", "K-S"), Value = round(c(roc_info$auc, sqrt(mean((vals$Predictions - vals$Actual)^2)), k_s),3))
   if(print_summary) print(scores)
-  all_plot <- gridExtra::grid.arrange(cal_plot, gridExtra::arrangeGrob(auc_plot, ks_plot, nrow = 1), gridExtra::arrangeGrob(dist_plot, gridExtra::tableGrob(scores), nrow = 1))
-  return(list(auc_plot, cal_plot, ks_plot, dist_plot, all_plot, scores))
+  all_plot <- gridExtra::arrangeGrob(cal_plot, gridExtra::arrangeGrob(auc_plot, ks_plot, nrow = 1), gridExtra::arrangeGrob(dist_plot, gridExtra::tableGrob(scores), nrow = 1))
+  return(list(auc_plot = auc_plot, cal_plot = cal_plot, ks_plot = ks_plot, dist_plot = dist_plot, summary_plot = all_plot, measures = scores))
 }

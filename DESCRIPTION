@@ -10,5 +10,6 @@ Imports:
   ggplot2,
   gridExtra,
   dplyr,
-  magrittr
+  magrittr,
+    pROC
 Suggests: testthat
