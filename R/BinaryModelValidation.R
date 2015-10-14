@@ -21,7 +21,7 @@
 
 BinaryModelValidation <- function(preds, Y, print_summary = T){
   if(min(preds) < 0 | max(preds) > 1) stop("prediction vector should be probabilities between 0 and 1")
-  if(dplyr::n_distinct(Y) == 2) stop("Y should be a binary response")
+  if(dplyr::n_distinct(Y) != 2) stop("Y should be a binary response")
   if(class(Y) != "numeric" | class(Y) != "integer"){
     Y <- factor(Y)
     Y <- (Y == levels(Y)[2]) * 1
