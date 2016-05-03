@@ -21,7 +21,7 @@
 
 BinaryModelValidation <- function(preds, Y, print_summary = T){
   if(min(preds) < 0 | max(preds) > 1) stop("prediction vector should be probabilities between 0 and 1")
-  if(dplyr::n_distinct(Y) == 2) stop("Y should be a binary response")
+  if(dplyr::n_distinct(Y) != 2) stop("Y should be a binary response")
   if(class(Y) != "numeric" | class(Y) != "integer"){
     Y <- factor(Y)
     Y <- (Y == levels(Y)[2]) * 1
@@ -52,7 +52,7 @@ BinaryModelValidation <- function(preds, Y, print_summary = T){
   
   ks_plot <- ggplot2::ggplot() + ggplot2::geom_line(ggplot2::aes(x = Number_of_Values, y = Pct_of_Yes), data = info, color = "blue", size = 2) + ggplot2::geom_line(ggplot2::aes(x = Number_of_Values, y = Pct_of_No), data = info, color = "red", size = 2) + ggplot2::geom_segment(ggplot2::aes(x = a, xend = a, y = b, yend = c), linetype = "dashed", data = locsdata) + ggplot2::xlab("Percentage of Population") + ggplot2::ylab("Percentage of 1's") + ggplot2::ggtitle("K-S Plot") + ggplot2::scale_x_continuous(labels = function(x) paste0(x*100, "%"), breaks = seq(0, 1, .1)) + ggplot2::scale_y_continuous(labels = function(x) paste0(x*100, "%")) + ggplot2::geom_text(ggplot2::aes(x = a, y = b/2 + c/2), data = locsdata, label = paste0("K-S = ", round(k_s,2)))
   
-  dist_plot <- ggplot2::ggplot(ggplot2::aes(x = Predictions), data = vals) + ggplot2::geom_density(ggplot2::aes(fill = as.factor(Actual)), alpha = .8) + ggplot2::xlab("Predictied No Show Probability") + ggplot2::ggtitle("Distribution of Scores") + ggplot2::scale_fill_discrete(name = "")
+  dist_plot <- ggplot2::ggplot(ggplot2::aes(x = Predictions), data = vals) + ggplot2::geom_density(ggplot2::aes(fill = as.factor(Actual)), alpha = .8) + ggplot2::xlab("Predicted No Show Probability") + ggplot2::ggtitle("Distribution of Scores") + ggplot2::scale_fill_discrete(name = "")
   
   scores <- dplyr::data_frame(Metric = c("AUC", "RMSE", "K-S"), Value = round(c(roc_info$auc, sqrt(mean((vals$Predictions - vals$Actual)^2)), k_s),3))
   if(print_summary) print(scores)
