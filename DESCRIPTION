@@ -1,15 +1,19 @@
-Package: EDA
+Package: modeler
 Title: Exploratory Data Analysis and Modeling Helper Functions
 Version: 0.0.0.9000
 Authors@R: person('Matt', 'Mills', email = 'mmills@expapp.com', role = c('aut', 'cre'))
 Description: What the package does (one paragraph).
-Depends: R (>= 3.1.3)
+Depends:
+    R (>= 3.1.3)
 License: What license is it under?
 LazyData: true
-Imports: 
-  ggplot2,
-  gridExtra,
-  dplyr,
-  magrittr,
-    pROC
-Suggests: testthat
+Imports:
+    ggplot2,
+    gridExtra,
+    dplyr,
+    magrittr,
+    pROC,
+    stringr
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
