@@ -13,7 +13,7 @@
 #' @importFrom magrittr %>%
 #' @import ggplot2
 
-patrial_plot <- function(fitted_model, variable) {
+partial_plot <- function(fitted_model, variable) {
   
   stopifnot("gam" %in% class(fitted_model))
   
