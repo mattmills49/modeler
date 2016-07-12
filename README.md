@@ -1,4 +1,3 @@
-# EDA
-R Package for Exploratory Data Analysis
+# Modeler
+R Package for helper functions applied to predictive modeling
 
-This is a line from RStudio
