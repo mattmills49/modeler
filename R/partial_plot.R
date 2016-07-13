@@ -9,7 +9,7 @@
 #' @param fitted_model a complete \code{gam} model object
 #' @param variable the name of the independent variable as a character string
 #' @return a \code{ggplot2} object of the partial regression plot
-#' 
+#' @export
 #' @importFrom magrittr %>%
 #' @import ggplot2
 
