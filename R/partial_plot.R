@@ -14,6 +14,10 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @import ggplot2
+#' @examples
+#' # library(ISLR)
+#' # library(mgcv)
+#' # default_gam <- gam(default ~ s(balance, fx = T, k = 6), data = Default, family = "binomial") 
 
 partial_plot <- function(fitted_model, variable, response = F) {
   
@@ -49,7 +53,7 @@ partial_plot <- function(fitted_model, variable, response = F) {
   
   partial_p <- ggplot(aes(x = variable, y = predictions), data = plot_values) + 
     geom_line(color = "blue", size = 2) + 
-    ylab(stringr::str_c("Prediction for ", attr(attr(fitted_model$pterms, "dataClasses"), "names"))) +
+    ylab(ylabel) +
     xlab(variable) +
     ggtitle(stringr::str_c("Partial Regression Plot for ", variable))
   
