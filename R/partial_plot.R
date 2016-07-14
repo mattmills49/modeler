@@ -46,9 +46,9 @@ partial_plot <- function(fitted_model, variable, response = F) {
   yname <- attr(attr(fitted_model$pterms, "dataClasses"), "names")
   ylabel <- stringr::str_c("Prediction for ", yname)
   if (response) {
-    ylabel <- stringr::str_c(ylabel, "\nResponse Scale")
+    ylabel <- stringr::str_c(ylabel, "\n(Response Scale)")
   } else {
-    ylabel <- stringr::str_c(ylabel, "\nLinear Prediction Scale")
+    ylabel <- stringr::str_c(ylabel, "\n(Linear Prediction Scale)")
   }
   
   partial_p <- ggplot(aes(x = variable, y = predictions), data = plot_values) + 
