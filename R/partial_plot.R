@@ -40,7 +40,7 @@ partial_plot <- function(fitted_model, variable, response = F) {
       plot_values$predictions <- 1 / (1 + exp(-(plot_values$smooth_curve + model_coefs["(Intercept)"])))
     }
   } else {
-    plot_values$predictions <- plot_values$smooth_curve
+    plot_values$predictions <- plot_values$smooth_curve + model_coefs["(Intercept)"]
   }
   
   yname <- attr(attr(fitted_model$pterms, "dataClasses"), "names")
