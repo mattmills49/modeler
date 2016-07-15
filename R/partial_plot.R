@@ -10,6 +10,7 @@
 #' @param variable the name of the independent variable as a character string
 #' @param response logical indicating if the plot should be on the linear 
 #' prediction scale or the response scale. Defaults to \code{FALSE}
+#' @param se logical indicating if standard errors should be plotted
 #' @return a \code{ggplot2} object of the partial regression plot
 #' @export
 #' @importFrom magrittr %>%
