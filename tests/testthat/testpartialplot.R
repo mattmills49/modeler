@@ -12,3 +12,18 @@ test_that("partial plot accepts multiple smoothing parameters", {
   expect_is(partial_plot(ti_gam, "hp"), "ggplot")
   expect_is(partial_plot(t2_gam, "hp"), "ggplot")
 })
+
+test_that("partial plot handles when variables have similar names", {
+  test_cars <- mtcars
+  test_cars$hpgreaterthan200 <- factor(mtcars$hp > 200)
+  test_gam <- gam(mpg ~ s(hp) + hpgreaterthan200, data = test_cars)
+  
+  expect_is(partial_plot(test_gam, "hp"), "ggplot")
+})
+
+test_that("response parameter doesn't impact linear models", {
+  lin_gam <- gam(mpg ~ s(hp), data = mtcars)
+  lin_plot <- partial_plot(lin_gam, "hp", response = F)
+  response_plot <- partial_plot(lin_gam, "hp", response = T)
+  expect_equal(lin_plot$data, response_plot$data)
+})
