@@ -1,25 +1,31 @@
 #' provides partial plots for fitted \code{gam} models
 #' 
-#' \code{partial_plot} accepts a fitted \code{gam} object and the name of the
-#' variable you wish to view the partial regression plot of as a character
-#' string. It returns a \code{ggplot2} object with the values of the
-#' independent variable plotted against the spline predictions plus the 
-#' intercept of the model. 
+#' \code{partial_plot} accepts a fitted \code{gam} object and the name of the 
+#' variable you wish to view the
+#' \href{https://en.wikipedia.org/wiki/Partial_regression_plot}{partial
+#' regression plot} of as a character string. It returns a \code{ggplot} object
+#' with the values of the independent variable plotted against the spline
+#' predictions plus the intercept of the model. You can determine which
+#' prediction level the plot is against using the \code{response} parameter and
+#' display the standard errors of the overall fit with the \code{se} paramter, 
+#' both of which are logical values defaulted to \code{FALSE}.
 #' 
 #' @param fitted_model a complete \code{gam} model object
 #' @param variable the name of the independent variable as a character string
 #' @param response logical indicating if the plot should be on the linear 
-#' prediction scale or the response scale. Defaults to \code{FALSE}
+#'   prediction scale or the response scale. Defaults to \code{FALSE}
+#' @param se logical indicating if the standard error of the overall fit should
+#'  be plotted as well. Defaults to \code{FALSE}.
 #' @return a \code{ggplot2} object of the partial regression plot
 #' @export
 #' @importFrom magrittr %>%
 #' @import ggplot2
 #' @examples
-#' # library(ISLR)
-#' # library(mgcv)
-#' # default_gam <- gam(default ~ s(balance, fx = T, k = 6), data = Default, family = "binomial") 
+#' library(mgcv)
+#' car_gam <- gam(mpg ~ s(hp), data = mtcars)
+#' partial_plot(car_gam, "hp")
 
-partial_plot <- function(fitted_model, variable, response = F) {
+partial_plot <- function(fitted_model, variable, response = F, se = F) {
   
   stopifnot("gam" %in% class(fitted_model))
   
@@ -51,11 +57,18 @@ partial_plot <- function(fitted_model, variable, response = F) {
     ylabel <- stringr::str_c(ylabel, "\n(Linear Prediction Scale)")
   }
   
-  partial_p <- ggplot(aes(x = variable, y = predictions), data = plot_values) + 
-    geom_line(color = "blue", size = 2) + 
+  partial_p <- ggplot() + 
+    geom_line(aes(x = variable, y = predictions), data = plot_values, color = "blue", size = 2) + 
     ylab(ylabel) +
     xlab(variable) +
     ggtitle(stringr::str_c("Partial Regression Plot for ", variable))
+  
+  if(se){
+    type_var <- ifelse(response, "response", "link")
+    standard_errors <- dplyr::as_data_frame(predict(fitted_model, type = type_var, se.fit = T)) %>% dplyr::mutate(x = variable_values) %>% dplyr::distinct()
+    partial_p <- partial_p + geom_ribbon(aes(x = x, ymax = fit + 2 * se.fit, ymin = fit - 2 * se.fit), data = standard_errors, fill = "grey80", alpha = .7)
+    partial_p$layers <- list(partial_p$layers[[2]], partial_p$layers[[1]])
+  }
   
   return(partial_p)
 }

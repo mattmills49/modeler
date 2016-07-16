@@ -1,5 +1,7 @@
 library(mgcv)
 context("Partial Plot")
+lin_gam <- gam(mpg ~ s(hp), data = mtcars)
+
 
 test_that("partial plot accepts multiple smoothing parameters", {
   s_gam <- gam(mpg ~ s(hp), data = mtcars)
@@ -22,8 +24,16 @@ test_that("partial plot handles when variables have similar names", {
 })
 
 test_that("response parameter doesn't impact linear models", {
-  lin_gam <- gam(mpg ~ s(hp), data = mtcars)
   lin_plot <- partial_plot(lin_gam, "hp", response = F)
   response_plot <- partial_plot(lin_gam, "hp", response = T)
   expect_equal(lin_plot$data, response_plot$data)
+})
+
+test_that("se parameter plots additional layer", {
+  lin_plot <- partial_plot(lin_gam, "hp", response = F)
+  se_plot <- partial_plot(lin_gam, "hp", response = F, se = T)
+  
+  expect_true(length(lin_plot$layers) == 1)
+  expect_true(length(se_plot$layers) == 2)
+  expect_true(class(se_plot$layers[[1]]$geom)[1] == "GeomRibbon")
 })
