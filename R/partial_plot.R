@@ -24,8 +24,11 @@
 #' library(mgcv)
 #' car_gam <- gam(mpg ~ s(hp), data = mtcars)
 #' partial_plot(car_gam, "hp")
+#' 
 
-partial_plot <- function(fitted_model, variable, response = F, se = F) {
+partial_plot <- function(fitted_model, variable, response = F, se = F) UseMethod("partial_plot")
+
+partial_plot.gam <- function(fitted_model, variable, response = F, se = F) {
   
   pred_matrix <- predict(fitted_model, type="lpmatrix")
   variable_values <- fitted_model$model[[variable]]
