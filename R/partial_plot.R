@@ -27,8 +27,6 @@
 
 partial_plot <- function(fitted_model, variable, response = F, se = F) {
   
-  stopifnot("gam" %in% class(fitted_model))
-  
   pred_matrix <- predict(fitted_model, type="lpmatrix")
   variable_values <- fitted_model$model[[variable]]
   model_coefs <- coef(fitted_model)
