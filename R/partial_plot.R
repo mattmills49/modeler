@@ -8,16 +8,13 @@
 #' predictions from the independent variable's values and coefficients on the 
 #' y-axis. This shows the relationship that the model has estimated between the
 #' independent variable the dependent variable. You can determine which
-#' prediction level the plot is against using the \code{response} parameter and
-#' display the standard errors of the overall fit with the \code{se} parameter,
-#' both of which are logical values defaulted to \code{FALSE}.
+#' prediction level the plot is against using the \code{response} parameter
+#' which is a logical value defaulted to \code{FALSE}.
 #' 
 #' @param fitted_model a complete regression model object
 #' @param variable the name of the independent variable as a character string
 #' @param response logical indicating if the plot should be on the linear 
 #'   prediction scale or the response scale. Defaults to \code{FALSE}
-#' @param se logical indicating if the standard error of the overall fit should 
-#'   be plotted as well. Defaults to \code{FALSE}.
 #' @return a \code{ggplot2} object of the partial regression plot
 #' @export
 #' @importFrom magrittr %>%
@@ -32,11 +29,11 @@
 #' partial_plot(am_gam, "hp") # on the log odds scale
 #' partial_plot(am_gam, "hp", response = T) # on the probability scale
 
-partial_plot <- function(fitted_model, variable, response = F, se = F) UseMethod("partial_plot")
+partial_plot <- function(fitted_model, variable, response = F) UseMethod("partial_plot")
 
 #' @describeIn partial_plot provides partial plots for fitted \code{gam} models
 
-partial_plot.gam <- function(fitted_model, variable, response = F, se = F) {
+partial_plot.gam <- function(fitted_model, variable, response = F) {
   
   pred_matrix <- predict(fitted_model, type="lpmatrix")
   variable_values <- fitted_model$model[[variable]]
@@ -71,13 +68,6 @@ partial_plot.gam <- function(fitted_model, variable, response = F, se = F) {
     ylab(ylabel) +
     xlab(variable) +
     ggtitle(stringr::str_c("Partial Regression Plot for ", variable))
-  
-  if(se){
-    type_var <- ifelse(response, "response", "link")
-    standard_errors <- dplyr::as_data_frame(predict(fitted_model, type = type_var, se.fit = T)) %>% dplyr::mutate(x = variable_values) %>% dplyr::distinct()
-    partial_p <- partial_p + geom_ribbon(aes(x = x, ymax = fit + 2 * se.fit, ymin = fit - 2 * se.fit), data = standard_errors, fill = "grey80", alpha = .7)
-    partial_p$layers <- list(partial_p$layers[[2]], partial_p$layers[[1]])
-  }
   
   return(partial_p)
 }

@@ -29,11 +29,11 @@ test_that("response parameter doesn't impact linear models", {
   expect_equal(lin_plot$data, response_plot$data)
 })
 
-test_that("se parameter plots additional layer", {
-  lin_plot <- partial_plot(lin_gam, "hp", response = F)
-  se_plot <- partial_plot(lin_gam, "hp", response = F, se = T)
+#test_that("se parameter plots additional layer", {
+#  lin_plot <- partial_plot(lin_gam, "hp", response = F)
+#  se_plot <- partial_plot(lin_gam, "hp", response = F, se = T)
   
-  expect_true(length(lin_plot$layers) == 1)
-  expect_true(length(se_plot$layers) == 2)
-  expect_true(class(se_plot$layers[[1]]$geom)[1] == "GeomRibbon")
-})
+#  expect_true(length(lin_plot$layers) == 1)
+#  expect_true(length(se_plot$layers) == 2)
+#  expect_true(class(se_plot$layers[[1]]$geom)[1] == "GeomRibbon")
+#})

@@ -5,9 +5,9 @@
 \alias{partial_plot.gam}
 \title{Partial Regression Plots for visualizing relationship between variables}
 \usage{
-partial_plot(fitted_model, variable, response = F, se = F)
+partial_plot(fitted_model, variable, response = F)
 
-\method{partial_plot}{gam}(fitted_model, variable, response = F, se = F)
+\method{partial_plot}{gam}(fitted_model, variable, response = F)
 }
 \arguments{
 \item{fitted_model}{a complete regression model object}
@@ -16,9 +16,6 @@ partial_plot(fitted_model, variable, response = F, se = F)
 
 \item{response}{logical indicating if the plot should be on the linear 
 prediction scale or the response scale. Defaults to \code{FALSE}}
-
-\item{se}{logical indicating if the standard error of the overall fit should 
-be plotted as well. Defaults to \code{FALSE}.}
 }
 \value{
 a \code{ggplot2} object of the partial regression plot
@@ -32,9 +29,8 @@ showing the independent variable values on the x-axis with the resulting
 predictions from the independent variable's values and coefficients on the 
 y-axis. This shows the relationship that the model has estimated between the
 independent variable the dependent variable. You can determine which
-prediction level the plot is against using the \code{response} parameter and
-display the standard errors of the overall fit with the \code{se} parameter,
-both of which are logical values defaulted to \code{FALSE}.
+prediction level the plot is against using the \code{response} parameter
+which is a logical value defaulted to \code{FALSE}.
 }
 \section{Methods (by class)}{
 \itemize{
