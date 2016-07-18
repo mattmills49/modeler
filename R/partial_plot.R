@@ -29,11 +29,11 @@
 #' partial_plot(am_gam, "hp") # on the log odds scale
 #' partial_plot(am_gam, "hp", response = T) # on the probability scale
 
-partial_plot <- function(fitted_model, variable, response = F) UseMethod("partial_plot")
+partial_plot <- function(fitted_model, variable, response = F, rug = F) UseMethod("partial_plot")
 
 #' @describeIn partial_plot provides partial plots for fitted \code{gam} models
 
-partial_plot.gam <- function(fitted_model, variable, response = F) {
+partial_plot.gam <- function(fitted_model, variable, response = F, rug = F) {
   
   pred_matrix <- predict(fitted_model, type="lpmatrix")
   variable_values <- fitted_model$model[[variable]]
@@ -68,6 +68,10 @@ partial_plot.gam <- function(fitted_model, variable, response = F) {
     ylab(ylabel) +
     xlab(variable) +
     ggtitle(stringr::str_c("Partial Regression Plot for ", variable))
+  
+  if (rug) {
+    partial_p <- partial_p + geom_rug(aes(x = variable), data = plot_values, sides = "b")
+  }
   
   return(partial_p)
 }
