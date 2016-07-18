@@ -5,9 +5,9 @@
 \alias{partial_plot.gam}
 \title{Partial Regression Plots for visualizing relationship between variables}
 \usage{
-partial_plot(fitted_model, variable, response = F)
+partial_plot(fitted_model, variable, response = F, rug = F)
 
-\method{partial_plot}{gam}(fitted_model, variable, response = F)
+\method{partial_plot}{gam}(fitted_model, variable, response = F, rug = F)
 }
 \arguments{
 \item{fitted_model}{a complete regression model object}
@@ -16,6 +16,9 @@ partial_plot(fitted_model, variable, response = F)
 
 \item{response}{logical indicating if the plot should be on the linear 
 prediction scale or the response scale. Defaults to \code{FALSE}}
+
+\item{rug}{logical indicating if a rug plot should be added on the 
+independent variable axis}
 }
 \value{
 a \code{ggplot2} object of the partial regression plot
