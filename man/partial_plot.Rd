@@ -2,38 +2,52 @@
 % Please edit documentation in R/partial_plot.R
 \name{partial_plot}
 \alias{partial_plot}
-\title{provides partial plots for fitted \code{gam} models}
+\alias{partial_plot.gam}
+\title{Partial Regression Plots for visualizing relationship between variables}
 \usage{
 partial_plot(fitted_model, variable, response = F, se = F)
+
+\method{partial_plot}{gam}(fitted_model, variable, response = F, se = F)
 }
 \arguments{
-\item{fitted_model}{a complete \code{gam} model object}
+\item{fitted_model}{a complete regression model object}
 
 \item{variable}{the name of the independent variable as a character string}
 
 \item{response}{logical indicating if the plot should be on the linear 
 prediction scale or the response scale. Defaults to \code{FALSE}}
 
-\item{se}{logical indicating if the standard error of the overall fit should
+\item{se}{logical indicating if the standard error of the overall fit should 
 be plotted as well. Defaults to \code{FALSE}.}
 }
 \value{
 a \code{ggplot2} object of the partial regression plot
 }
 \description{
-\code{partial_plot} accepts a fitted \code{gam} object and the name of the 
-variable you wish to view the
-\href{https://en.wikipedia.org/wiki/Partial_regression_plot}{partial
-regression plot} of as a character string. It returns a \code{ggplot} object
-with the values of the independent variable plotted against the spline
-predictions plus the intercept of the model. You can determine which
+\code{partial_plot} accepts a fitted regression object and the name of the 
+variable you wish to view the 
+\href{https://en.wikipedia.org/wiki/Partial_regression_plot}{partial 
+regression plot} of as a character string. It returns a \code{ggplot} object 
+showing the independent variable values on the x-axis with the resulting 
+predictions from the independent variable's values and coefficients on the 
+y-axis. This shows the relationship that the model has estimated between the
+independent variable the dependent variable. You can determine which
 prediction level the plot is against using the \code{response} parameter and
-display the standard errors of the overall fit with the \code{se} paramter, 
+display the standard errors of the overall fit with the \code{se} parameter,
 both of which are logical values defaulted to \code{FALSE}.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{gam}: provides partial plots for fitted \code{gam} models
+}}
 \examples{
 library(mgcv)
 car_gam <- gam(mpg ~ s(hp), data = mtcars)
 partial_plot(car_gam, "hp")
+
+# Response level changes look for non-gaussian families
+am_gam <- gam(factor(am) ~ s(hp), data = mtcars, family = "binomial")
+partial_plot(am_gam, "hp") # on the log odds scale
+partial_plot(am_gam, "hp", response = T) # on the probability scale
 }
 
