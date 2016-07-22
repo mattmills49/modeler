@@ -34,6 +34,7 @@
 partial_plot <- function(fitted_model, variable, response = F, rug = F) UseMethod("partial_plot")
 
 #' @describeIn partial_plot provides partial plots for fitted \code{gam} models
+#' @export
 
 partial_plot.gam <- function(fitted_model, variable, response = F, rug = F) {
   
