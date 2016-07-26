@@ -31,7 +31,7 @@
 #' partial_plot(am_gam, "hp") # on the log odds scale
 #' partial_plot(am_gam, "hp", response = T) # on the probability scale
 
-partial_plot <- function(fitted_model, variable, response = F, rug = F) UseMethod("partial_plot")
+partial_plot <- function(fitted_model, ...) UseMethod("partial_plot")
 
 #' @describeIn partial_plot provides partial plots for fitted \code{gam} models
 #' @export
