@@ -61,3 +61,12 @@ profile.factor <- function(variable) {
   return(factor_info)
 }
 
+#' @describeIn profile profile factor vectors
+#' @export 
+
+profile.logical <- function(variable) {
+  log_info <- profile.character(as.numeric(variable))
+  log_info$Value[log_info$Term == "Class"] <- "Logical"
+  return(log_info)
+}
+

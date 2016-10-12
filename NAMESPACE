@@ -3,6 +3,7 @@
 S3method(partial_plot,gam)
 S3method(profile,character)
 S3method(profile,factor)
+S3method(profile,logical)
 S3method(profile,numeric)
 export(BinaryModelValidation)
 export(KS)

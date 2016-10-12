@@ -4,6 +4,7 @@
 \alias{profile}
 \alias{profile.character}
 \alias{profile.factor}
+\alias{profile.logical}
 \alias{profile.numeric}
 \title{Profile variables}
 \usage{
@@ -14,6 +15,8 @@ profile(element)
 \method{profile}{character}(element)
 
 \method{profile}{factor}(variable)
+
+\method{profile}{logical}(variable)
 }
 \arguments{
 \item{element}{a vector you wish to profile.}
@@ -29,6 +32,8 @@ will return summary information on that vector returned as a data.frame.
 \item \code{character}: profile character vectors
 
 \item \code{factor}: profile factor vectors
+
+\item \code{logical}: profile factor vectors
 }}
 \examples{
 set.seed(123456)
