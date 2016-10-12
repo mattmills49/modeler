@@ -26,8 +26,8 @@ profile.numeric <- function(element){
   
   summry <- summary(element)[1:6]
   std_dev <- sd(element, na.rm = T)
-  terms = c("Type", "Mean", "Median", "Min", "Max", "First_Quartile", "Third_Quartile", "SD", "Num_Missing", "Num_Unique") 
-  values = c(type, unname(summry)[c(4, 3, 1, 6, 2, 5)], std_dev, num_missing, num_unique)
+  terms = c("Class", "Type", "Mean", "Median", "Min", "Max", "First_Quartile", "Third_Quartile", "SD", "Num_Missing", "Num_Unique") 
+  values = c("Numeric", type, unname(summry)[c(4, 3, 1, 6, 2, 5)], std_dev, num_missing, num_unique)
   var_info <- dplyr::data_frame(Term = terms, Value = values) %>%
     tidyr::spread(Term, Value)
   return(var_info)
@@ -45,8 +45,8 @@ profile.character <- function(element) {
   } else type <- "Character"
   
   top_5 <- head(sort(table(element), decreasing = T, na.last = NA), 5)
-  terms <- c("Type", names(top_5), "Num_Unique", "Num_Missing")
-  values <- c(type, unname(top_5), num_unique, num_missing)
+  terms <- c("Class", "Type", names(top_5), "Num_Unique", "Num_Missing")
+  values <- c("Character", type, unname(top_5), num_unique, num_missing)
   var_info <- dplyr::data_frame(Term = terms, Value = values) %>%
     tidyr::spread(Term, Value)
   return(var_info)
@@ -56,6 +56,8 @@ profile.character <- function(element) {
 #' @export 
 
 profile.factor <- function(variable) {
-  profile.character(as.character(variable))
+  factor_info <- profile.character(as.character(variable))
+  factor_info$Value[factor_info$Term == "Class"] <- "Factor"
+  return(factor_info)
 }
 

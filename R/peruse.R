@@ -15,8 +15,8 @@ peruse <- function(df){
   assertthat::assert_that(nrow(df) > 0)
   perused <- df %>%
     purrr::map(profile) %>%
-    purrr::map(tidyr::nest, -Type, -Num_Missing, -Num_Unique) %>%
+    purrr::map(tidyr::nest, -Class, -Type, -Num_Missing, -Num_Unique) %>%
     dplyr::bind_rows(.id = "Variable") %>%
-    dplyr::select(Variable, Type, everything())
+    dplyr::select(Variable, Class, Type, dplyr::everything())
   return(perused)
 }
