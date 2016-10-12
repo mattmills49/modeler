@@ -3,31 +3,24 @@
 \name{profile}
 \alias{profile}
 \alias{profile.character}
-\alias{profile.data.frame}
 \alias{profile.factor}
 \alias{profile.numeric}
 \title{Profile variables}
 \usage{
-profile(variable, ...)
+profile(element)
 
-\method{profile}{numeric}(variable)
+\method{profile}{numeric}(element)
 
-\method{profile}{character}(variable)
+\method{profile}{character}(element)
 
 \method{profile}{factor}(variable)
-
-\method{profile}{data.frame}(variable)
 }
 \arguments{
-\item{variable}{a vector you wish to profile. Supply a data frame if you 
-wish to apply the \code{profile} function to each column}
+\item{element}{a vector you wish to profile.}
 }
 \description{
 \code{profile} takes in a vector and, depending on the class of the vector,
-will return summary information on that vector returned as a data.frame. If
-given a data frame \code{profile} will apply the profile function to each
-column and return a data.frame of the summary info with an additional 
-column for the variable name associated with that row.
+will return summary information on that vector returned as a data.frame.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -36,15 +29,11 @@ column for the variable name associated with that row.
 \item \code{character}: profile character vectors
 
 \item \code{factor}: profile factor vectors
-
-\item \code{data.frame}: profile entire data frame
 }}
 \examples{
 set.seed(123456)
 sample_variable <- sample(letters, size = 100, replace = T)
 profile(sample_variable)
 
-## Profile entire data frame
-profile(iris)
 }
 
