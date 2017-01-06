@@ -7,7 +7,10 @@
 #' @param data a data frame
 #' @export
 #' @examples 
-#' peruse(mtcars)
+#' cars_summary <- peruse(mtcars)
+#' numeric_info <- cars_summary %>%
+#'   dplyr::filter(Class == "Numeric") %>%
+#'   tidyr::unnest(data)
 #' 
 
 peruse <- function(df){
