@@ -84,6 +84,20 @@ These aren't necessarily typical regression transformations like log or polynomi
 #### add_pca
 
 `add_pca` will append a data frame with the pca loadings from a specified set 
-of variables.
+of variables. You can include the new column names (or let them default to `.pc1`, `.pc2`, etc...) and specifiy the number of loadings to return (default is to include
+all).
 
 ```r
+add_pca(mtcars, mpg:wt, new_column = "car_specs", n = 3) %>% head(3)
+#    mpg cyl disp  hp drat    wt  qsec vs am gear carb car_specs.pc1
+# 1 21.0   6  160 110 3.90 2.620 16.46  0  1    4    4    -1.0177186
+# 2 21.0   6  160 110 3.90 2.875 17.02  0  1    4    4    -0.9093556
+# 3 22.8   4  108  93 3.85 2.320 18.61  1  1    4    1    -1.9968043
+#   car_specs.pc2 car_specs.pc3
+# 1    -0.1514974   -0.02970885
+# 2    -0.1032240    0.14450082
+# 3     0.2073380    0.07414376
+```
+
+
+
