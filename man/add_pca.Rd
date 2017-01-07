@@ -31,4 +31,7 @@ columns are allowed and any rows with missing values will be returned with
 missing values for the PCA columns. It will append these new pca loadings to
 the data frame as additional columns.
 }
+\examples{
+add_pca(mtcars, mpg:wt, new_column = "car_specs", n = 3) \%>\% head(3)
+}
 

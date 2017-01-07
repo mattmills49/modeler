@@ -18,7 +18,8 @@
 #'   loadings will be returned.
 #' @return the original data frame with the new principle component columns
 #' @export
-#' 
+#' @examples 
+#' add_pca(mtcars, mpg:wt, new_column = "car_specs", n = 3) %>% head(3)
 
 add_pca <- function(.data, ..., new_column = NULL, n = NULL){
   
