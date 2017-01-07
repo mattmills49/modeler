@@ -4,20 +4,30 @@
 #' for selected independent variables against a specified binary dependent 
 #' variable. 
 #' 
+#' @param .data a data frame containing the variables to analyze
+#' @param ... columns to calculate woe for. Uses \code{dplyr}'s \code{select} rules
+#' @param y the dependent binary variable
+#' @return a data frame where each row lists a columns Information Value and a 
+#' nested data frame containing the splits used and the Weight of Evidence for
+#' each. 
+#' @export
 #' @import tidyr
+#' @examples 
+#' 
+#' find_woe(mtcars, mpg:qsec, y = am)
 
 find_woe <- function(.data, ..., y){
   stopifnot(is.data.frame(.data))
   
   x_vars <- dplyr::select(.data, ...)
-  y_name <- as.character(substitute(list(...))[-1])
-  y_var <- .data[[yname]]
+  y_name <- as.character(substitute(list(y))[-1])
+  y_var <- .data[[y_name]]
   
   if(length(unique(.data[[y_name]])) != 2) stop("Y variable is not binary")
   if(any(is.na(.data[[y_name]]))) stop("y must not contain any missing values")
   
-  info <- dplyr::bind_rows(purrr::map(x_vars, ~ woe(x = .x, y = y_var)))
-  
+  info <- dplyr::bind_rows(purrr::map(x_vars, ~ woe(x = .x, y = y_var)), .id = "variable")
+  return(info)
 }
   
   
@@ -75,9 +85,9 @@ calc_woe <- function(x, y, bins){
   levels <- sort(unique(y))
   prob_dist <- prop.table(tableNA(x, y == levels[2]) + .5, 2)
   weight <- log(prob_dist[, 2] / prob_dist[, 1])
-  iv <- sum((prob_dist[, 2] - prob_dist[, 1]) * weight, na.rm = T) * 100
+  iv <- sum((prob_dist[, 2] - prob_dist[, 1]) * weight, na.rm = T)
 
-  iv_data <- dplyr::data_frame(iv = iv, bins = bins, woe = weight[bins]) %>%
+  iv_data <- dplyr::data_frame(iv = iv, bins = factor(bins, levels = levels(x)), woe = weight[bins]) %>%
     tidyr::nest(bins:woe)
   
   return(iv_data)
