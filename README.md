@@ -99,5 +99,36 @@ add_pca(mtcars, mpg:wt, new_column = "car_specs", n = 3) %>% head(3)
 # 3     0.2073380    0.07414376
 ```
 
+#### impact_code
+
+`impact_code` implements some of the methods in [this
+paper](http://helios.mm.di.uoa.gr/~rouvas/ssi/sigkdd/sigkdd.vol3.1/barreca.pdf)
+to deal with high cardinality categorical variables. The basic thought is that
+it finds the average of the dependent variable for each level and then shrinks
+that estimate to the overall average depending on how much evidence is in the
+data. This is a data processing step that should be done on calibration data and
+then applied on a training data set to be used in model building.
+
+```r
+impact_code(mtcars, am ~ cyl)
+#     cyl  estimate
+#   <dbl>     <dbl>
+# 1     4 0.6844089
+# 2     6 0.4294859
+# 3     8 0.1771094
+dplyr::group_by(mtcars, cyl) %>% dplyr::summarise(mean_am = mean(am))
+#     cyl   mean_am
+#   <dbl>     <dbl>
+# 1     4 0.7272727
+# 2     6 0.4285714
+# 3     8 0.1428571
+```
+
+So the impact code estimates are all shrinked towards the overall mean of 40.6%
+
+### Variable Relationships
+
+#### find_woe
+
 
 
