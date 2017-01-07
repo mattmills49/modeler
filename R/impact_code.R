@@ -6,22 +6,22 @@
 #' @param .data the data frame the data is contained in
 #' @param ... the variable to transform
 #' @param y the dependent variable
-#' @param numeric logical is the dependent variable a non-binary continous variable
+#' @param binary is the dependent variable a binary variable? Logical value
 #' @export
 #' @import magrittr
 #' 
 #' 
 
-impact_code <- function(.data, ..., y, numeric = F){
+impact_code <- function(.data, ..., y, binary = T){
   stopifnot(is.data.frame(.data))
   y_name <- as.character(substitute(list(y)))[-1]
   stopifnot(all(!is.na(.data[[y_name]])))
   
   x_vars <- dplyr::select(.data, ...)
   
-  if(numeric){
-    codings <- smoother_gaussian(x = x_vars, y = .data[[y_name]])
-  } else codings <- smoother_binomial(x = x_vars, y = .data[[y_name]])
+  if(binary){
+    codings <- smoother_binomial(x = x_vars, y = .data[[y_name]])
+  } else codings <- smoother_gaussian(x = x_vars, y = .data[[y_name]])
   
   return(codings)
 }
