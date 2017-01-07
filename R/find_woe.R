@@ -38,21 +38,12 @@ find_woe <- function(.data, ..., y){
 #' converted to a character vector. 
 #' @param x Independent variable
 #' @param y Must be Categorical or only have two values. Also can't contain any \code{NA} values
-#' @param bins The number of buckets to bin the independent variable (\code{x})
-#' @param adj A small adjustment should be included if some buckets may only have 1 level of \code{y}. Defaults to .5
-#' @param incl_NA should \code{NA} observations be included? Default = TRUE
-#' @return A list containing:
-#' @return \code{InformationValue} The information value from the WOE
-#' @return \code{Bins} The cutpoints for the bins
-#' @return \code{Plot} ggplot object with the WOE of each bin. 
 #' @keywords WOE, IV
 #' @export 
-#' @examples
-#' result <- WOE(x = 1:100, y = sample(c(0, 1), 100, replace = T))
 
 woe <- function(x, y) UseMethod("woe")
 
-#' @describeIn woe
+#' @describeIn woe numeric
 woe.numeric <- function(x, y){
   if(length(unique(x)) < 10){
     return(woe.factor(factor(x), y))
@@ -66,7 +57,7 @@ woe.numeric <- function(x, y){
   }
 }
 
-#' @describeIn woe
+#' @describeIn woe factor
 woe.factor <- function(x, y){
   if(any(is.na(x))) x <- addNA(x)
   bins <- levels(x)
@@ -74,12 +65,12 @@ woe.factor <- function(x, y){
   return(calc_woe(x, y, bins))
 }
 
-#' @describeIn woe
+#' @describeIn woe character
 woe.character <- function(x, y){
   return(woe.factor(factor(x)), y)
 }
 
-#' @describeIn find_woe
+#' @describeIn find_woe calculates woe
 calc_woe <- function(x, y, bins){
   n_bins <- length(unique(bins))
   levels <- sort(unique(y))
