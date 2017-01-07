@@ -21,6 +21,7 @@ impact_code <- function(.data, formula, binary = T){
   x_vars <- dplyr::select_(.data, .dots = x_names)
   
   if(binary){
+    stopifnot(length(unique(y)) != 2)
     codings <- smoother_binomial(y = y_var, x = x_vars, groups = x_names)
   } else codings <- smoother_gaussian(y = y_var, x = x_vars, groups = x_names)
   
