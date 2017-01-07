@@ -1,3 +1,5 @@
+
+
 smoother_binomial <- function(x, y){
   group_names <- sort(unique(x))
   group_counts <- vapply(group_names, function(gr) sum(x == gr), numeric(1))
