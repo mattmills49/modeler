@@ -14,14 +14,14 @@ each section is included below.
 
 ### Exploratory Analysis
 
-Everyone has their own EDA packages and ideas and these are some I use a lot.
+Everyone has their own EDA steps and ideas but these are some I use a lot.
 
 #### peruse
 
 `peruse` examines the variables in a data frame and returns basic summary info
 about the individual variables.
 
-```
+```r
 cars_summary <- peruse(mtcars)
 head(cars_summary)
 #    Variable   Class    Type Num_Missing Num_Unique             data
@@ -34,7 +34,7 @@ head(cars_summary)
 Extra information is returned in the `data` column but will differ between the
 `Variable` types. Simply use `tidyr`'s `unnest` function to view the extra data.
 
-```
+```r
 tidyr::unnest(cars_summary, data) %>% head(3)
 #   Variable   Class    Type Num_Missing Num_Unique First_Quartile   Max  Mean
 #      <chr>   <chr>   <chr>       <chr>      <chr>          <chr> <chr> <chr>
@@ -48,4 +48,42 @@ tidyr::unnest(cars_summary, data) %>% head(3)
 # 3  196.3  71.1 123.938693831382            326
 ```
 
+The `profile` function will preform this on a single variable. 
 
+#### sample_groups
+
+`sample_groups` allows you to sample at the group level. So instead of using 
+`sample_n` from dplyr to sample `n` observations you can use `sample_groups` to 
+return a certain number of groups. This is usually applied when you have nested 
+or hierarchical data. For example if I have a data set with attendance
+information at a team-game-fan level I may want to return all attendance
+observations from only a few games (for close data inspection or plotting). I
+can use sample_groups to accomplish this in one step.
+
+```r
+single_iris <- sample_groups(iris, Species, n = 1)
+table(single_iris$Species)
+# setosa versicolor  virginica 
+#      0         50          0 
+```
+
+#### helpers
+
+I've also included various helper functions:
+
+* `deciles` - returns the deciles of a numeric vector
+* `how_man_nas` - returns how many nas are in each column of a data frame
+* `multiplot` - plot multiple plots as one
+* `tableNA` - table function that includes NA
+* `view` - like head or tail but returns a random number of observations
+
+### Variable Transformations
+
+These aren't necessarily typical regression transformations like log or polynomial transformations. 
+
+#### add_pca
+
+`add_pca` will append a data frame with the pca loadings from a specified set 
+of variables.
+
+```r
