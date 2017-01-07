@@ -26,4 +26,4 @@ test_that("add_pca handles missing values", {
   mtcars_missing$hp[c(1, 3, 5)] <- NA
   
   expect_equal(nrow(mtcars), nrow(add_pca(mtcars_missing, n = 3)))
-}
+})

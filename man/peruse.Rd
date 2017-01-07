@@ -16,7 +16,10 @@ returned for different types of columns so the function returns a data frame
 with the underlying data nested.
 }
 \examples{
-peruse(mtcars)
+cars_summary <- peruse(mtcars)
+numeric_info <- cars_summary \%>\%
+  dplyr::filter(Class == "Numeric") \%>\%
+  tidyr::unnest(data)
 
 }
 
