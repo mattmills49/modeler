@@ -126,9 +126,58 @@ dplyr::group_by(mtcars, cyl) %>% dplyr::summarise(mean_am = mean(am))
 
 So the impact code estimates are all shrinked towards the overall mean of 40.6%
 
+### model_matrix
+
+`model_matrix` is a wrapper around `model.matrix` but will preserve all levels 
+of character or factor variables. 
+
+```r
+model.matrix(Petal.Width ~ Petal.Length + Species, data = iris) %>% head(3)
+#   (Intercept) Petal.Length Speciesversicolor Speciesvirginica
+# 1           1          1.4                 0                0
+# 2           1          1.4                 0                0
+# 3           1          1.3                 0                0
+model_matrix(Petal.Width ~ Petal.Length + Species, .data = iris) %>% head(3)
+#   (Intercept) Petal.Length Speciessetosa Speciesversicolor Speciesvirginica
+# 1           1          1.4             1                 0                0
+# 2           1          1.4             1                 0                0
+# 3           1          1.3             1                 0                0
+```
+
 ### Variable Relationships
 
 #### find_woe
+
+Weight of Evidence and Information Value are modeling tools that allow you to
+measure the strength of the relationship between independent variables and
+a dependent variable. This measure can detect non-linear relationships and 
+handles categorical variables and missing values. 
+
+```r
+find_woe(mtcars, mpg:qsec, y = am)
+#   variable       iv              data
+#      <chr>    <dbl>            <list>
+# 1      mpg 1.875599 <tibble [10 x 2]>
+# 2      cyl 1.067032  <tibble [3 x 2]>
+# 3     disp 1.959199 <tibble [10 x 2]>
+# 4       hp 1.341193 <tibble [10 x 2]>
+# 5     drat 2.513143 <tibble [10 x 2]>
+# 6       wt 1.995249 <tibble [10 x 2]>
+# 7     qsec 1.201222 <tibble [10 x 2]>
+```
+The `data` column contains the actual splits used. 
+
+```r
+find_woe(mtcars, mpg:qsec, y = am) %>% 
+  dplyr::slice(2) %>% 
+  tidyr::unnest(data)
+#   variable       iv   bins         woe
+#      <chr>    <dbl> <fctr>       <dbl>
+# 1      cyl 1.067032      4  1.23357943
+# 2      cyl 1.067032      6  0.09496181
+# 3      cyl 1.067032      8 -1.26316168
+```
+
 
 
 
