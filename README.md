@@ -72,7 +72,7 @@ table(single_iris$Species)
 I've also included various helper functions:
 
 * `deciles` - returns the deciles of a numeric vector
-* `how_man_nas` - returns how many nas are in each column of a data frame
+* `how_many_nas` - returns how many nas are in each column of a data frame
 * `multiplot` - plot multiple plots as one
 * `tableNA` - table function that includes NA
 * `view` - like head or tail but returns a random number of observations
@@ -126,7 +126,7 @@ dplyr::group_by(mtcars, cyl) %>% dplyr::summarise(mean_am = mean(am))
 
 So the impact code estimates are all shrinked towards the overall mean of 40.6%
 
-### model_matrix
+#### model_matrix
 
 `model_matrix` is a wrapper around `model.matrix` but will preserve all levels 
 of character or factor variables. 
