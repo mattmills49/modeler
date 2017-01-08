@@ -76,6 +76,8 @@ I've also included various helper functions:
 * `multiplot` - plot multiple plots as one
 * `tableNA` - table function that includes NA
 * `view` - like head or tail but returns a random number of observations
+* `n_combos` - counts the number of combinations between different columns in a data frame
+* `grouped_arrange` - includes grouped columns in the arrange call
 
 ### Variable Transformations
 

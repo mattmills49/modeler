@@ -172,3 +172,30 @@ remove_null <- function(vec) vec[!is.null(vec)]
 
 #' @describeIn remove_from Removes NA values
 remove_na <- function(vec) vec[!is.na(vec)]
+
+#' n_distinct for data frames
+#' 
+#' returns the number of distinct combinations for the selected columns 
+#' 
+#' @param .data a data frame
+#' @param ... the columns to count the number of groups. Uses \code{dplyr}'s \code{select} rules
+#' @export
+
+n_combos <- function(.data, ...){
+  return(nrow(dplyr::distinct(.data, ...)))
+}
+
+#' arrange a data frame including the grouped columns
+#' 
+#' this function will automatically include the grouped columns in the arrange
+#' call.
+#' 
+#' @param .data a data frame
+#' @param ... the columns to arrange. Uses \code{dplyr}'s \code{select} rules
+#' @export
+
+grouped_arrange <- function(.data, ...){
+  grouped_cols <- vapply(attr(.data, "vars"), function(x) deparse(x), character(1))
+  sort_cols <- as.character(substitute(list(...))[-1])
+  return(dplyr::arrange_(.data, .dots = c(grouped_cols, sort_cols)))
+}
