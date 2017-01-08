@@ -13,7 +13,7 @@
 #' @param binary is the dependent variable a binary variable? Logical value
 #' @return a data frame that includes the levels of the categorical variable and the smoothed estimate of the dependent variable. 
 #' @export
-#' @import magrittr
+#' @importFrom magrittr %>%
 #' @examples 
 #' impact_code(mtcars, am ~ cyl)
 #' impact_code(iris, Petal.Width ~ Species, binary = F)

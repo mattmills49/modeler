@@ -10,7 +10,7 @@
 #' @param n the number of groupings to return
 #' @return a data frame containing the sampled groupings
 #' @export
-#' @import magrittr
+#' @importFrom magrittr %>%
 #' @examples
 #' sample_groups(mtcars, cyl, am)
 
