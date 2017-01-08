@@ -22,7 +22,6 @@
 #' \code{complete_obs} a data frame with the missing values replaced through regression imputation
 #' 
 #' \code{change} The differences between each iteration for each variable
-#' @export
 #' @examples 
 #' iris_df <- iris
 #' set.seed(123456)

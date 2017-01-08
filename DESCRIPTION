@@ -14,7 +14,8 @@ Imports:
     magrittr,
     pROC,
     stringr,
-    testthat
+    testthat,
+    purrr
 Suggests:
     testthat
 RoxygenNote: 5.0.1

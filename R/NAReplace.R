@@ -10,7 +10,6 @@
 #' \code{x_replace} The new vector with missing values filled in
 #' \code{na_indicator} A dummy variable (0 or 1) with that tells you the indices of missing values
 #' \code{replacement_val} The value that the means were replaced with
-#' @export
 #' @examples 
 #' y <- c(sample(c(0, 1), 25, replace = T, prob = c(.25, .75)), sample(c(0, 1), 25, replace = T, prob = c(.4, .6)), sample(c(0, 1), 25, replace = T, prob = c(.6, .4)), sample(c(0, 1), 25, replace = T, prob = c(.75, .25)))
 #' set.seed(924516)
