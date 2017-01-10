@@ -199,3 +199,18 @@ grouped_arrange <- function(.data, ...){
   sort_cols <- as.character(substitute(list(...))[-1])
   return(dplyr::arrange_(.data, .dots = c(grouped_cols, sort_cols)))
 }
+
+#' use percentage scales for ggplot2
+#' 
+#' adds percentage scales to ggplot2 plots
+#' 
+#' @export
+
+scale_y_percentage <- function(...) scale_y_continuous(labels = function(x) paste0(x * 100, "%"), ...)
+
+#' @describeIn scale_y_percentage adds percentage scales to ggplot2 plots
+#' @export
+
+scale_x_percentage <- function(...) scale_x_continuous(labels = function(x) paste0(x * 100, "%"), ...)
+
+
