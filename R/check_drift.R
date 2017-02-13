@@ -30,9 +30,9 @@ check_drift <- function(.data, formula, bins = NULL, theme = NULL){
   drift_values <- lazyeval::f_eval_rhs(formula, data = .data)
   
   if(is.null(theme)){
-    drift_check(x_values = x_values, x_name = x_char, drift_values = drift_values, drift_name = drift_char, .data = .data, bins = bins)
+    drift_check(x_values = x_values, x_name = x_char, drift_values = drift_values, drift_name = drift_char, .data = .data, bins = bins) + scale_y_percentage()
   } else {
-    drift_check(x_values = x_values, x_name = x_char, drift_values = drift_values, drift_name = drift_char, .data = .data, bins = bins) + theme
+    drift_check(x_values = x_values, x_name = x_char, drift_values = drift_values, drift_name = drift_char, .data = .data, bins = bins) + scale_y_percentage() + theme
   }
   
 }
