@@ -9,6 +9,7 @@
 #' on the rhs
 #' @param bins the number of bins to make. If \code{NULL} (default) then each 
 #' variable value will be used. 
+#' @param theme a sequence of ggplot2 theme objects
 #' 
 #' @return a ggplot2 object showing the distribution of the variable colored by
 #' group
@@ -19,7 +20,7 @@
 #' check_drift(mtcars, cyl ~ am, bins = NULL)
 
 
-check_drift <- function(.data, formula, bins = NULL){
+check_drift <- function(.data, formula, bins = NULL, theme = NULL){
   x_var <- lazyeval::f_lhs(formula)
   x_char <- as.character(x_var)
   x_values <- lazyeval::f_eval_lhs(formula, data = .data)
@@ -28,7 +29,11 @@ check_drift <- function(.data, formula, bins = NULL){
   drift_char <- as.character(drift_var)
   drift_values <- lazyeval::f_eval_rhs(formula, data = .data)
   
-  drift_check(x_values = x_values, x_name = x_char, drift_values = drift_values, drift_name = drift_char, .data = .data, bins = bins)
+  if(is.null(theme)){
+    drift_check(x_values = x_values, x_name = x_char, drift_values = drift_values, drift_name = drift_char, .data = .data, bins = bins)
+  } else {
+    drift_check(x_values = x_values, x_name = x_char, drift_values = drift_values, drift_name = drift_char, .data = .data, bins = bins) + theme
+  }
   
 }
 
@@ -97,27 +102,3 @@ drift_check.character <- function(x_values, x_name, drift_values, drift_name, .d
 }
 
 drift_check.factor <- function(x_values, x_name, drift_values, drift_name, .data, bins) drift_check.character(as.character(x_values), x_name, drift_values, drift_name, .data, bins)
-
-# .data %>%
-#   dplyr::mutate_(.dots = setNames(list(~ as.character(drift_name)), drift_name)) %>%
-#   dplyr::group_by_(.dots = c(drift_name, x_name)) %>%
-#   dplyr::summarize(n = n()) %>%
-#   dplyr::mutate(perc = n / sum(n)) %>%
-#   tidyr::complete_(cols = c(drift_name, x_name)) %>%
-#   ggplot2::ggplot(ggplot2::aes_string(x = x_name, y = "perc", fill = drift_name)) +
-#   ggplot2::geom_col(position = ggplot2::position_dodge(), na.rm = T) +
-#   ggplot2::xlab(x_name) +
-#   ggplot2::ylab("Percentage of Observations") +
-#   ggplot2::ggtitle(stringr::str_c("Change in ", x_name, " by ", drift_name))
-# 
-# .data %>%
-#   dplyr::mutate(num_breaks = cut(x_values, breaks = break_locs, include.lowest = T)) %>%
-#   dplyr::group_by_(.dots = c(drift_name, "num_breaks")) %>%
-#   dplyr::summarize(n = n()) %>% 
-#   dplyr::mutate(perc = n / sum(n)) %>%
-#   tidyr::complete_(cols = c(drift_name, "num_breaks")) %>%
-#   ggplot2::ggplot(ggplot2::aes_string(x = "num_breaks", y = "perc", fill = drift_name)) +
-#   ggplot2::geom_col(position = ggplot2::position_dodge(), na.rm = T) +
-#   ggplot2::xlab(x_char) +
-#   ggplot2::ylab("Percentage of Observations") +
-#   ggplot2::ggtitle(stringr::str_c("Change in ", x_char, " by ", drift_name))

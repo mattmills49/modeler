@@ -4,7 +4,7 @@
 \alias{check_drift}
 \title{Visualize trend in variables across another}
 \usage{
-check_drift(.data, formula, bins = NULL)
+check_drift(.data, formula, bins = NULL, theme = NULL)
 }
 \arguments{
 \item{.data}{a data frame containing the data in question}
@@ -14,6 +14,8 @@ on the rhs}
 
 \item{bins}{the number of bins to make. If \code{NULL} (default) then each 
 variable value will be used.}
+
+\item{theme}{a sequence of ggplot2 theme objects}
 }
 \value{
 a ggplot2 object showing the distribution of the variable colored by
