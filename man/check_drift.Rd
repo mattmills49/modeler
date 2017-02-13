@@ -4,7 +4,7 @@
 \alias{check_drift}
 \title{Visualize trend in variables across another}
 \usage{
-check_drift(.data, formula, bins = 10)
+check_drift(.data, formula, bins = NULL)
 }
 \arguments{
 \item{.data}{a data frame containing the data in question}
@@ -12,8 +12,8 @@ check_drift(.data, formula, bins = 10)
 \item{formula}{a formula with the variable on the lhs and grouping variable 
 on the rhs}
 
-\item{bins}{the number of bins to make. If \code{NULL} then each variable 
-value will be used.}
+\item{bins}{the number of bins to make. If \code{NULL} (default) then each 
+variable value will be used.}
 }
 \value{
 a ggplot2 object showing the distribution of the variable colored by

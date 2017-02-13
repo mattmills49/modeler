@@ -7,8 +7,8 @@
 #' @param .data a data frame containing the data in question
 #' @param formula a formula with the variable on the lhs and grouping variable 
 #' on the rhs
-#' @param bins the number of bins to make. If \code{NULL} then each variable 
-#' value will be used. 
+#' @param bins the number of bins to make. If \code{NULL} (default) then each 
+#' variable value will be used. 
 #' 
 #' @return a ggplot2 object showing the distribution of the variable colored by
 #' group
@@ -19,7 +19,7 @@
 #' check_drift(mtcars, cyl ~ am, bins = NULL)
 
 
-check_drift <- function(.data, formula, bins = 10){
+check_drift <- function(.data, formula, bins = NULL){
   x_var <- lazyeval::f_lhs(formula)
   x_char <- as.character(x_var)
   x_values <- lazyeval::f_eval_lhs(formula, data = .data)
