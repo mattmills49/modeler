@@ -4,12 +4,16 @@
 \alias{binary_model_evaluation}
 \title{Calculate Binary Model Performance Metrics}
 \usage{
-binary_model_evaluation(.data, prediction_formula)
+binary_model_evaluation(.data, prediction_formula, group_var = NULL)
 }
 \arguments{
 \item{.data}{a data frame}
 
-\item{prediction_formula}{a formula specifiying the dependent binary variable (lhs) and the probability predictions (rhs)}
+\item{prediction_formula}{a formula specifiying the dependent binary variable
+(lhs) and the probability predictions (rhs)}
+
+\item{group_var}{an unquoted variable name to calculate performance measures
+on each subset of the data - e.g., training/testing splits}
 }
 \value{
 a data frame containing the metrics
@@ -34,6 +38,8 @@ iris_ <- iris
 iris_$setosa <- ifelse(iris_$Species == "setosa", 1, 0)
 iris_$pred <- iris_$Sepal.Length
 iris_$pred <- (max(iris_$pred) - iris_$pred) / (max(iris_$pred) - min(iris_$pred) + 1)
+iris_$splits <- sample(c("Test", "Train"), size = nrow(iris_), replace = T)
 binary_model_evaluation(iris_, setosa ~ pred)
+binary_model_evaluation(iris_, setosa ~ pred, group_var = splits)
 }
 
