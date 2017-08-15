@@ -7,6 +7,7 @@ test_that("acf_by_group returns a data.frame", {
 })
 
 test_that("acf_by_group accepts acf parameters", {
+  expect_is(ratings_acf <- acf_by_group(pres_ratings, pre_1965, approval, na.action = na.pass), "data.frame")
   expect_equal(nrow(acf_by_group(sample_data, group, value, lag.max = 4)), 15)
 })
 

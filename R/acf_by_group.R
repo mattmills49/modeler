@@ -28,7 +28,7 @@ acf_by_group <- function(.data, .group_var, .value_var, ...){
 
   .data %>%
     tidyr::nest_(key_col = "data", nest_cols = nest_cols) %>%
-    dplyr::mutate(acf_results = purrr::map(data, ~ acf(.x[[value_var]], plot = F, ...)),
+    dplyr::mutate(acf_results = purrr::map(data, function(x) acf(x[[value_var]], plot = F, ...)),
                   acf_values = purrr::map(acf_results, ~ drop(.x$acf))) %>%
     tidyr::unnest(acf_values) %>%
     dplyr::group_by(!!group_var) %>%

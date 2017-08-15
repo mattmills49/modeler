@@ -180,6 +180,35 @@ find_woe(mtcars, mpg:qsec, y = am) %>%
 # 3      cyl 1.067032      8 -1.26316168
 ```
 
+### acf_by_group
 
+A lot of data I work with are time series in nature but also nested by groups.
+In order to examine the nested time series trends `acf_by_group` will find the
+auto correlation function by group. 
 
+```r
+pres_ratings <- data.frame(approval = presidents, 
+                           pre_1965 = c(rep(1, 60), rep(0, 60)))
+ratings_acf <- acf_by_group(pres_ratings, pre_1965, approval, na.action = na.pass)
+#   pre_1965 acf_values   lag
+#      <dbl>      <dbl> <int>
+# 1        1  1.0000000     0
+# 2        1  0.7620363     1
+# 3        1  0.6290838     2
+```
+
+`acf_by_group` uses the `stats::acf` function so you can pass any extra
+arguments you want
+
+```r
+ratings_pac <- acf_by_group(pres_ratings, pre_1965, approval, na.action = na.pass, type = "partial")
+#   pre_1965 acf_values   lag
+#      <dbl>      <dbl> <int>
+# 1        1  0.7620363     0
+# 2        1  0.1153933     1
+# 3        1 -0.2246557     2
+```
+
+Right now you actually don't need to provide a grouping variable, it will just
+return the auto-correlation values for the whole data frame. 
 
