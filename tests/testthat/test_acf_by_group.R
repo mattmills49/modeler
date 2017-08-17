@@ -18,3 +18,12 @@ test_that("acf_by_group handles missing/bad arguments", {
   expect_error(acf_by_group(sample_data, group, value2))
   expect_error(acf_by_group(sample_data, group, NULL))
 })
+
+test_that("acf_by_group returns proper standard error values", {
+  expect_equal(ncol(acf_by_group(sample_data, group, value, .ci = "none")), 3)
+  expect_equal(ncol(acf_by_group(sample_data, group, value, .ci = "white")), 4)
+  expect_equal(ncol(acf_by_group(sample_data, group, value, .ci = "ma")), 4)
+  expect_error(acf_by_group(sample_data, group, value, .ci = "testhis"))
+  expect_true(length(unique(acf_by_group(sample_data, .value_var = value, .ci = "white")$se)) == 1)
+  expect_true(length(unique(acf_by_group(sample_data, .value_var = value, .ci = "ma")$se)) > 1)
+})
